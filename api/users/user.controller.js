@@ -2,6 +2,8 @@ const {create} = require("./user.service");
 
 
 module.exports = {
+
+    //createn van een user
     createUser: (req, res) => {
         const body = req.body;
         create(body,(err , results)=> {
