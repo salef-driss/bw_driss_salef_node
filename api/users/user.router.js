@@ -4,7 +4,7 @@ const router = require("express").Router();
 router.post("/",createUser); 
 router.get("/", getUsers); 
 router.get("/:id", getUserByUserId); 
-router.patch("/:id", updateUser); 
+router.put("/:id", updateUser); 
 router.delete("/:id", deleteUser)
 
 
