@@ -1,5 +1,5 @@
 const { json } = require("express");
-const {create , getUserByUserId, updateUser , getUsers , deleteUser , advancedSearch , advancedOrder} = require("./user.service"); 
+const {create , getUserByUserId, updateUser , getUsers , deleteUser , advancedSearch , advancedOrder , getUsersWithLimitAndOffset,searchUserByFirstName} = require("./user.service"); 
 const validateUserData = require('../validation/userValidation');
 
 
@@ -150,7 +150,50 @@ module.exports = {
             data: results
           });
         });
-    }
+    },
 
+
+    getUsersWithLimitAndOffset: (req, res) => {
+        const limit = parseInt(req.query.limit) || 3; 
+        const offset = parseInt(req.query.offset) || 3;
+        getUsersWithLimitAndOffset(limit, offset, (err, results) => {
+           if(err){
+               console.log(err); 
+               return;
+           }
+       
+           return res.json({
+               success:1,
+               data:results
+           });
+        });
+    },
+
+    searchOnFirstName : (req, res) => {
+        const searchValue = req.query.searchValue;
+        console.log('Search Value in searchOnFirstName:', searchValue);
+
+        searchUserByFirstName(searchValue, (err, results) => {
+            if (err) {
+                console.log(err);
+                return res.status(500).json({
+                    success: 0,
+                    message: "Database connection error"
+                });
+            }
     
+            if (results.length === 0) {
+                return res.status(404).json({
+                    success: 0,
+                    message: "No users found with the specified first name"
+                });
+            }
+    
+            return res.status(200).json({
+                success: 1,
+                data: results
+            });
+        });
+    }
+          
 }

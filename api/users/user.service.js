@@ -173,7 +173,34 @@ module.exports = {
           }
           return callBack(null, results); 
         });
-       }
+    },
     
+    getUsersWithLimitAndOffset: (limit, offset, callBack) => {
+        let query = `SELECT * FROM User LIMIT ? OFFSET ?`;
+        pool.query(query, [limit, offset], (error, results, fields) => {
+            if(error){
+                return callBack(error); 
+            }
+            return callBack(null,results); 
+        });
+    },
+
+    searchUserByFirstName: (searchValue, callBack) => {
+        let query = `SELECT * FROM User WHERE first_name LIKE ?`;
+        console.log('Search Value in searchUserByFirstName:', searchValue);
+
+        pool.query(query, [`%${searchValue}%`], (error, results, fields) => {
+           if (error) {
+            console.log('Error in searchUserByFirstName:', error);
+
+               return callBack(error);
+           }
+           console.log('Results in searchUserByFirstName:', results);
+
+           return callBack(null, results);
+        });
+     },
+      
+     
 
 }
