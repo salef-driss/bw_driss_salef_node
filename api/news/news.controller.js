@@ -1,13 +1,22 @@
 const { json } = require("express");
 const {createNews , getAllNews , getNewsByUserId , updateNews , deleteNews} = require("./news.service"); 
+const validateNewsData = require('../validation/newsValidation');
 
 
 module.exports = {
 
     //createn van een news 
     createNews: (req, res) => {
+
+        req.body.date = new Date().toLocaleDateString();
+
+        const errors = validateNewsData(req.body);
         const body = req.body;
-        body.date = new Date().toLocaleDateString(); 
+
+        if(errors){
+            return res.status(400).json({errors}); 
+        }
+        
         createNews(body,(err , results)=> {
             if(err){
                 console.log(err);
