@@ -5,6 +5,18 @@ const validateUserData = require('../validation/userValidation');
 
 module.exports = {
     //createn van een user
+    //POST: http://localhost:3000/api/users
+    /*
+        {
+            "first_name": "Cederick",
+            "last_name": "mmm",
+            "gender": "man",
+            "city": "Halle",
+            "street": "dilbeek",
+            "houseNr": 45,
+            "phoneNr": "+32 444 33 42 48"
+        }
+    */
     createUser:(req, res) => {
 
         const errors = validateUserData(req.body);
@@ -29,6 +41,8 @@ module.exports = {
         }); 
     },
 
+    //gaat 1 user ophalen
+    //GET:http://localhost:3000/api/users/{id}
     getUserByUserId:(req,res) => {
         const id = req.params.id; 
         getUserByUserId(id, (err, results) => {
@@ -44,6 +58,8 @@ module.exports = {
         })
     }, 
 
+    // gaat alle users ophalen
+    //GET: http://localhost:3000/api/users
     getUsers:(req, res) =>{
         getUsers((err,results) => {
             if(err){
@@ -58,9 +74,16 @@ module.exports = {
         });
     }, 
 
+    // Gaat een user updaten 
+    //PUT:http://localhost:3000/api/users/{id}
     updateUser:(req,res) =>{
         const body = req.body; 
         const id = req.params.id; 
+
+        const errors = validateUserData(body);
+        if (errors) {
+            return res.status(400).json({ errors });
+        }
 
         updateUser(id,body,(err,results) => {
             if (err) {
@@ -85,6 +108,8 @@ module.exports = {
         }); 
     }, 
 
+    // Gaat een user deleten 
+    // http://localhost:3000/api/users/{id}
     deleteUser: (req,res) =>{
         const id = req.params.id; 
         deleteUser(id,(err,results) =>{
@@ -110,6 +135,9 @@ module.exports = {
         }); 
     },
 
+    // Je kan user oproeken door te filteren op meerdere zaken 
+    // zoals first_name , last_name en andere zaken 
+    // GET: http://localhost:3000/api/users/search?gender=man&last_name=salef&city=Halle&first_Name=Driss
     advancedSearch: (req, res) => {
         console.log("test")
         const params = req.query;
@@ -131,7 +159,9 @@ module.exports = {
         });
      },
 
-    
+    // Ordennen van users 
+    // GET: http://localhost:3000/api/users/order?field=first_name,street,city&direction=asc
+
     advancedOrder: (req, res) => {
         const orderField = req.query.field;
         const orderDirection = req.query.direction;
@@ -152,7 +182,8 @@ module.exports = {
         });
     },
 
-
+    // limit staat voor het max aantal dat hij zal nemen en offset saat voor hoeveel hij er eerst gaat skippen
+    //GET: http://localhost:3000/api/users/limit?limit=2&offset=2
     getUsersWithLimitAndOffset: (req, res) => {
         const limit = parseInt(req.query.limit) || 3; 
         const offset = parseInt(req.query.offset) || 3;
@@ -169,6 +200,8 @@ module.exports = {
         });
     },
 
+    //Gaat user sturen met een bepaald firstName 
+    //GET: http://localhost:3000/api/users/searchFirstName?searchValue=Driss
     searchOnFirstName : (req, res) => {
         const searchValue = req.query.searchValue;
         console.log('Search Value in searchOnFirstName:', searchValue);
